@@ -32,3 +32,27 @@ Func Min(x, y)
         return y
     endif
 EndFunc
+
+Func Pow(x, y)
+    if y < 0 then
+        return 1.0 / Pow(x, Abs(y))
+    endif
+
+    dim temp = x
+    For n In range(y - 1)
+        temp = temp * x
+    Next
+    return temp
+EndFunc
+
+Class Random
+	Func Next(min, max)
+        return random(min, max)
+    EndFunc
+
+    Func NextFloat(min, max)
+        dim i = random(min, max)
+        dim j = random(0, 10000000) / 10000000.0
+        return i + j
+    EndFunc
+EndClass
