@@ -1,4 +1,6 @@
 ﻿Imports System.IO
+Imports System.Numerics
+Imports System.Security.Cryptography
 Imports FoxScript.Utils
 Public Class ErrorUtils
     '引发异常 返回一个Fox_Error对象
@@ -135,6 +137,27 @@ Public Class Utils
         Next
 
         Return Nothing
+    End Function
+    Public Shared Function GenerateRandomBigInteger(min As BigInteger, max As BigInteger) As BigInteger
+        ' 计算min和max之间的差值
+        Dim range As BigInteger = max - min
+
+        ' 计算需要多少位来表示范围
+        Dim bits As Integer = CInt(Math.Ceiling(BigInteger.Log(range, 2)))
+
+        ' 创建一个RNGCryptoServiceProvider实例
+        Using rng As RNGCryptoServiceProvider = New RNGCryptoServiceProvider()
+            Dim bytes As Byte() = New Byte(bits / 8) {}
+            Dim result As BigInteger
+
+            Do
+                rng.GetBytes(bytes)
+                ' 将字节数组转换为BigInteger，并减去min以得到正确的范围
+                result = New BigInteger(bytes) Mod (range + 1)
+            Loop While result < 0 ' 确保结果为非负数
+
+            Return result + min
+        End Using
     End Function
 End Class
 

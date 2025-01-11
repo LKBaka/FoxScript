@@ -638,6 +638,32 @@ Public Class Builtins
                                                                 End If
 
                                                                 Return Obj_Nothing
+                                                            End Function}},
+        {"random", New Fox_Builtin With {.BuiltinFunction = Function(args As IEnumerable(Of Object))
+                                                                Dim 所需实参数 = 2
+
+                                                                If args.Count > 所需实参数 Then
+                                                                    Return ThrowError($"实参过多")
+                                                                End If
+
+                                                                If args.Count = 所需实参数 AndAlso args(0) IsNot Nothing Then
+                                                                    If args(0).Type() <> ObjectType.INTEGER_OBJ Then
+                                                                        Return ThrowError($"类型错误: 在参数{1} 中传入了一个{args(0).Type}类型的参数")
+                                                                    ElseIf args(1).Type() <> ObjectType.INTEGER_OBJ Then
+                                                                        Return ThrowError($"类型错误: 在参数{2} 中传入了一个{args(1).Type}类型的参数")
+                                                                    End If
+                                                                    If args(1).Value < args(0).Value Then
+                                                                        Return ThrowError($"参数{1}必须小于等于参数{2}")
+                                                                    End If
+                                                                    Dim val As BigInteger = Utils.GenerateRandomBigInteger(args(0).Value, args(1).Value)
+                                                                    Return New Fox_Integer With {.Value = val}
+                                                                End If
+
+                                                                If args.Count < 所需实参数 Then
+                                                                    Return ThrowError($"提供的实参过少 实参{args.Count}个 形参{所需实参数}个")
+                                                                End If
+
+                                                                Return Nothing
                                                             End Function}}
     }
     Public Shared builtinVars As New Dictionary(Of String, Fox_Builtin) From
